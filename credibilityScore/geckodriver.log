@@ -3565,3 +3565,9 @@ IPDL protocol error: Handler returned error code!
 
 JavaScript error: https://static.mixi.media/static/jsapi/jsapi.v2.6.0.en_US.js, line 115: NS_ERROR_NOT_INITIALIZED: 
 JavaScript error: resource://gre/modules/Sqlite.jsm, line 1031: Error: Sqlite.jsm has been shutdown. Cannot open connection to: /tmp/rust_mozprofileyZukw8/protections.sqlite
+1605711303434	geckodriver	INFO	Listening on 127.0.0.1:39007
+1605711304525	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile4GnF5o"
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new Error("", "(unknown module)"))
+1605711307458	Marionette	INFO	Listening on port 33841
+1605711307761	Marionette	WARN	TLS certificate errors will be ignored for this session
+1605711490037	Marionette	INFO	Stopped listening on port 33841
