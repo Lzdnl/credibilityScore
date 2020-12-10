@@ -61,7 +61,7 @@ def formality_check():
     for paragraph in article_paragraphs:
         words = paragraph.split(' ')
 
-        for i in range(len(words)-1):
+        for i in range(len(words)):
 
             # Remove special characters from beginning and end of words
             words[i] = re.sub('[.:;,!?(){}<>]', '', words[i])
@@ -84,7 +84,7 @@ def formality_check():
 
     title_words = article_paragraphs[0].split(' ')
 
-    for i in range(len(title_words)-1):
+    for i in range(len(title_words)):
         title_words[i] = re.sub('[.:;,!?(){}<>]', '', title_words[i])
         title_words[i] = title_words[i].replace('''”''', '')
         title_words[i] = title_words[i].replace('''“''', '')
@@ -130,3 +130,4 @@ def formality_check():
         line7 = formality_test_results.write('Average or less than average lexical richness')
 
     formality_test_results.close()
+
