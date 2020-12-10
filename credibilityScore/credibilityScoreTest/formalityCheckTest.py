@@ -17,7 +17,7 @@ class MyTestCase(unittest.TestCase):
     def test_marks_total(self):
         f = open(path, "r")
         all_lines = f.readlines()
-        self.assertEqual(all_lines[1].strip(),  '0 ! or ? in total')
+        self.assertEqual(all_lines[1].strip(),  '0 ? in total')
         f.close()
 
     def test_consecutive_marks(self):
@@ -47,7 +47,7 @@ class MyTestCase(unittest.TestCase):
     def test_vocabulary(self):
         f = open(path, "r")
         all_lines = f.readlines()
-        self.assertEqual(all_lines[6].strip(), 'Higher than average lexical density')
+        self.assertEqual(all_lines[6].strip(), 'Higher than average lexical richness')
         f.close()
 
 

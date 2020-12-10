@@ -1,6 +1,8 @@
 import getWebsiteText
-import spellCheck
+import cleanWebsiteText
+import formalityCheck
 
 getWebsiteText.get_website_text(input("Enter URL: "))
-spellCheck.spell_check()
+cleanWebsiteText.clean_website_text()
+formalityCheck.formality_check()
 

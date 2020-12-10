@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
+import time
+from selenium.webdriver.support import expected_conditions as EC
 
 """ Because the HTML structure of each news website is different, we are taking the whole text of the page and writing
  it to a file to process later. The extension 'I don't care about cookies' removes the consent popups. """
@@ -11,13 +13,21 @@ def get_website_text(url):
 
     driver.get(url)
 
-    wait = WebDriverWait(driver, 10)
+    # TODO get rid of sleep by making the wait work properly
+    wait = WebDriverWait(driver, 15)
+    time.sleep(5)
+
 
     # Getting the text
     website_text = driver.find_element(By.XPATH, '//body').text
+    website_title = driver.find_element(By.XPATH, '(//body//h1)[1]').text
 
     website_text_file = open("websiteText.txt", "w")
-    n = website_text_file.write(website_text)
+    website_text_write = website_text_file.write(website_text)
     website_text_file.close()
+
+    website_title_file = open("websiteTitle.txt", "w")
+    website_title_write = website_title_file.write(website_title)
+    website_title_file.close()
 
     driver.quit()
