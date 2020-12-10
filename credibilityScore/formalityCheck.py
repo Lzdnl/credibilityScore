@@ -17,7 +17,7 @@ def formality_check():
 
     with open('cleanedTextFile.txt') as cleaned_text_file:
         article_paragraphs = cleaned_text_file.readlines()
-    # you may also want to remove whitespace characters like `\n` at the end of each line
+
     article_paragraphs = [paragraph.strip() for paragraph in article_paragraphs]
 
     # Count total number of words (will be used for normalization of spelling mistakes)
