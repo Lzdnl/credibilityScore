@@ -26,7 +26,7 @@ def neutrality_check():
     # print(superlatives_list)
 
     # Read Google banned words into list
-    with open('google_banned_words_2021_01_18.txt') as banned_words:
+    with open('google_banned_words_2021.txt') as banned_words:
         banned_words_list = banned_words.readlines()
 
     # Clean Google banned words list
