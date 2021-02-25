@@ -25,7 +25,6 @@ def formality_check():
         words = paragraph.split(" ")
         total_word_count += len(words)
 
-
     # Check for exclamation or question marks in the title
     marks_count_title = article_paragraphs[0].count('!')
     marks_count_title += article_paragraphs[0].count('?')
@@ -130,4 +129,6 @@ def formality_check():
         line7 = formality_test_results.write('Average or less than average lexical richness')
 
     formality_test_results.close()
+
+formality_check()
 
