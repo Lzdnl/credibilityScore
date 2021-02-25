@@ -36,5 +36,3 @@ def get_website_text(url):
     website_subtitle_file.close()
 
     driver.quit()
-
-get_website_text('https://www.foxnews.com/politics/new-york-cuomo-sexual-harassment-leading-liberal-women')

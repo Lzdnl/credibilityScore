@@ -53,5 +53,3 @@ def clean_website_text():
             cleaned_text_file.write(paragraph + "\n")
 
     cleaned_text_file.close()
-
-clean_website_text()
