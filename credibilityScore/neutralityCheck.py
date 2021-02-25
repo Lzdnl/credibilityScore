@@ -8,10 +8,11 @@ def neutrality_check():
     banned_words_dict = {}
     emotion_lexicon_dictionary = collections.defaultdict(list)
     emotion_words_text_dictionary = {}
+    slur_count = 0
     total_word_number = 0
 
     # Read article text into list
-    with open('./test/cleanedTextFile2.txt') as cleaned_text_file:
+    with open('cleanedTextFile.txt') as cleaned_text_file:
         article_paragraphs = cleaned_text_file.readlines()
 
     article_paragraphs = [paragraph.strip() for paragraph in article_paragraphs]
@@ -51,8 +52,17 @@ def neutrality_check():
             emotion_lexicon_dictionary[word[0]].append(word[1])
             #print(word)
 
+    with open('racial_slurs.txt') as racial_slurs:
+        racial_slur_list = racial_slurs.readlines()
+
+    for i in range(len(racial_slur_list)):
+        racial_slur_list[i] = racial_slur_list[i].strip("\n")
+
     for paragraph in article_paragraphs:
         words = paragraph.split()
+
+        total_word_number += len(words)
+
         for i in range(len(words)):
 
             # Remove special characters from words (exception: hyphen)
@@ -97,6 +107,9 @@ def neutrality_check():
                     else:
                         emotion_words_text_dictionary[value] += 1
 
+        for slur in racial_slur_list:
+            slur_count += count_overlapping(cleaned_words, " " + slur.lower() + " ")
+
     # print(emotion_words_text_dictionary)
 
     # Check whether both a word and an expression containing it appear in the dictionary of bad word occurrences,
@@ -124,19 +137,24 @@ def neutrality_check():
 
     # Copy the results of our neutrality check to the results file -> we will use it in the test cases
     line1_result = neutrality_test_results.write(str(superlative_count))
-    line1_message = neutrality_test_results.write(' superlatives found\n')
+    line1_message = neutrality_test_results.write(' superlatives identified\n')
 
     line2_result = neutrality_test_results.write(str(len(banned_words_final_count)))
     line2_message = neutrality_test_results.write(' profanities found in ')
     line2_result2 = neutrality_test_results.write(str(sum(banned_words_final_count.values())))
     line2_message2 = neutrality_test_results.write(' instances\n')
 
-    line3_result = neutrality_test_results.write(str(emotion_words_text_dictionary["positive"]))
-    line3_message = neutrality_test_results.write(' instances of positive emotion words found\n')
+    emotional_word_ratio = emotion_words_text_dictionary["positive"]/total_word_number + emotion_words_text_dictionary["negative"]/total_word_number
+    if emotional_word_ratio >= 0.05:
+        line3_result = neutrality_test_results.write("Unacceptable emotional word ratio\n")
+    else:
+        line3_result = neutrality_test_results.write("Acceptable emotional word ratio\n")
 
-    line4_result = neutrality_test_results.write(str(emotion_words_text_dictionary["negative"]))
-    line3_message = neutrality_test_results.write(' instances of negative emotion words found\n')
+    # line4_result = neutrality_test_results.write(str(emotion_words_text_dictionary["negative"]/total_word_number))
+    # line4_message = neutrality_test_results.write(' negative emotion word ratio\n')
 
+    line4_result = neutrality_test_results.write(str(slur_count))
+    line4_message1 = neutrality_test_results.write(' slurs identified\n')
 
 # https://stackoverflow.com/questions/2970520/string-count-with-overlapping-occurrences
 def count_overlapping(string, sub):
