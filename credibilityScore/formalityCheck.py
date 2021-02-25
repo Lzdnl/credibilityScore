@@ -130,5 +130,5 @@ def formality_check():
 
     formality_test_results.close()
 
-formality_check()
+#formality_check()
 

@@ -47,7 +47,7 @@ class MyTestCase(unittest.TestCase):
     def test_vocabulary(self):
         f = open(path, "r")
         all_lines = f.readlines()
-        self.assertEqual(all_lines[6].strip(), 'Higher than average lexical richness')
+        self.assertEqual(all_lines[6].strip(), 'Higher than average lexical density')
         f.close()
 
 
