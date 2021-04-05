@@ -9,7 +9,6 @@ from selenium.webdriver.support import expected_conditions as EC
 def get_website_text(url):
     profile = webdriver.FirefoxProfile()
     profile.add_extension(extension='i_dont_care_about_cookies-3.2.4-an+fx.xpi')
-    profile.add_extension(extension='ublock_origin-1.34.0-an+fx.xpi')
     driver = webdriver.Firefox(firefox_profile=profile)
 
     driver.get(url)
@@ -19,10 +18,12 @@ def get_website_text(url):
     time.sleep(5)
 
 
-    # Getting the text
+    # Getting the text, title and author
     website_text = driver.find_element(By.XPATH, '//body').text
     website_title = driver.find_element(By.XPATH, '(//body//h1)[1]').text
    # website_subtitle = driver.find_element(By.XPATH, '(//body//h2)[1]').text
+    website_author = driver.find_elements(By.XPATH, '(//*[contains(@*, \'author\')])[1]')
+    opinion_section_exists = driver.find_elements(By.XPATH, '//h1/preceding::*[text() = \'Opinion\']')
 
     # Getting the references
     ancestor_text=[]
@@ -38,7 +39,7 @@ def get_website_text(url):
     #print(len(ancestor_text))
     #print(ancestor_text)
 
-    for link in driver.find_elements(By.XPATH, '//h1/following::a'):
+    for link in driver.find_elements(By.XPATH, '//h1/following::a[@href]'):
         ancestor = link.find_element(By.XPATH, 'ancestor::*[position()=1]')
         ancestor_text.append(ancestor.text)
         if link.text != '':
@@ -60,9 +61,17 @@ def get_website_text(url):
         website_reference_file_write = website_reference_file.write(link_list[i] + "|" + link_text[i] + "|" + ancestor_text[i] + "\n")
     website_reference_file.close()
 
-    website_url = open("websiteURL.txt", "w")
-    website_url_write = website_url.write(url)
-    website_url.close()
+    website_properties = open("websiteProperties.txt", "w")
+    website_properties_url = website_properties.write(url)
+    if len(website_author) == 1:
+        website_properties_author = website_properties.write("\nAuthor found \n")
+    if len(website_author) == 0:
+        website_properties_author = website_properties.write("\nNo author found \n")
+    if len(opinion_section_exists) > 0:
+        website_properties_opinion_section = website_properties.write("True")
+    if len(opinion_section_exists) == 0:
+        website_properties_opinion_section = website_properties.write("False")
+    website_properties.close()
 
    # website_subtitle_file = open("websiteSubTitle.txt", "w")
    # website_subtitle_write = website_subtitle_file.write(website_subtitle)
