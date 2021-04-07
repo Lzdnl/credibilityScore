@@ -1,10 +1,18 @@
 #Test case for layout credibility metrics
 
 @objects
-    picture-*                        xpath              //article//img[@height>400 or (string-length(@alt)>50)] | //div[contains(@id, 'article')]//img[@height>400 or string-length(@alt)>50]
+    picture-*                        xpath              (//*[contains(@id, '-end')] | //*[contains(@id, 'footer')] | //*[contains(@class, 'footer')])[1]/preceding::img
 
 
-= Main page structure =
+= Picture check =
     @on *
-        picture-1:
-            visible
+        picture-*:
+            height > 400 px
+            
+= Video check =
+
+= Font size check =
+
+= Font type check =
+
+= Advertisements check =
