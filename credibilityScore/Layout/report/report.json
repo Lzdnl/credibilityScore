@@ -1,0 +1,17 @@
+{
+  "tests" : [ {
+    "name" : "layoutCheck",
+    "startedAt" : 1617799050488,
+    "endedAt" : 1617799153347,
+    "failed" : false,
+    "statistic" : {
+      "passed" : 2,
+      "errors" : 0,
+      "warnings" : 0,
+      "total" : 2
+    },
+    "testId" : "1-layoutcheck",
+    "duration" : 102859,
+    "failed" : false
+  } ]
+}

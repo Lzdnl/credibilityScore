@@ -1,0 +1,10 @@
+#Test case for layout credibility metrics
+
+@objects
+    picture-*                        xpath              //article//img[@height>400 or (string-length(@alt)>50)] | //div[contains(@id, 'article')]//img[@height>400 or string-length(@alt)>50]
+
+
+= Main page structure =
+    @on *
+        picture-1:
+            visible

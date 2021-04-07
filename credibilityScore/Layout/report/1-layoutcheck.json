@@ -1,0 +1,56 @@
+{
+  "testId" : "1-layoutcheck",
+  "name" : "layoutCheck",
+  "report" : {
+    "nodes" : [ {
+      "name" : "jsfactory mydriver.js https://www.dailymail.co.uk/news/article-9432593/Expert-suspects-causal-link-AstraZeneca-jab-rare-blood-clots.html 1536x864",
+      "status" : "info",
+      "nodes" : [ {
+        "name" : "wait 1s",
+        "status" : "info",
+        "time" : 1617799147815,
+        "type" : "node"
+      }, {
+        "name" : "check layoutCheck.gspec --include \"all\"",
+        "status" : "info",
+        "nodes" : [ {
+          "name" : "Check layout: layoutCheck.gspec included tags: all",
+          "status" : "info",
+          "time" : 1617799150644,
+          "includedTags" : [ "all" ],
+          "excludedTags" : [ ],
+          "sections" : [ {
+            "name" : "Main page structure",
+            "place" : {
+              "filePath" : "layoutCheck.gspec",
+              "lineNumber" : 7
+            },
+            "objects" : [ {
+              "name" : "picture-1",
+              "specs" : [ {
+                "status" : "info",
+                "place" : {
+                  "filePath" : "layoutCheck.gspec",
+                  "lineNumber" : 10
+                },
+                "name" : "visible",
+                "highlight" : [ "picture-1" ]
+              } ]
+            } ]
+          } ],
+          "objects" : {
+            "picture-1" : {
+              "area" : [ 280, 2606, 636, 434 ]
+            }
+          },
+          "screenshot" : "layout-1-screenshot.png",
+          "type" : "layout"
+        } ],
+        "time" : 1617799148816,
+        "type" : "node"
+      } ],
+      "time" : 1617799050490,
+      "type" : "node"
+    } ]
+  }
+}

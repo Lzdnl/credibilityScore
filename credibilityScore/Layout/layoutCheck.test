@@ -1,0 +1,4 @@
+layoutCheck
+    jsfactory mydriver.js https://www.dailymail.co.uk/news/article-9432593/Expert-suspects-causal-link-AstraZeneca-jab-rare-blood-clots.html 1536x864
+        wait 1s
+        check layoutCheck.gspec --include "all"
