@@ -17,7 +17,7 @@
         video-1:
             visible
 
-= Font size check =
+= Font size check for headline =
     @on *
         headline:
             css font-size is "27px"
@@ -30,6 +30,9 @@
             css font-size is "34px"
             css font-size is "35px"
             css font-size is "36px"
+
+= Font size check for text =
+    @on *
         text:
             css font-size is "13px"
             css font-size is "14px"
@@ -38,10 +41,13 @@
             css font-size is "17px"
             css font-size is "18px"
 
-= Font type check =
+= Font type check for headline =
     @on *
         headline:
             css font-family contains "sans-serif"
+
+= Font type check for text =
+    @on *
         text:
             css font-family contains "sans-serif"
 
