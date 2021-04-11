@@ -1,18 +1,48 @@
 #Test case for layout credibility metrics
 
 @objects
-    picture-*                        xpath              (//*[contains(@id, '-end')] | //*[contains(@id, 'footer')] | //*[contains(@class, 'footer')])[1]/preceding::img
+    picture-*                        xpath              //h1[1]/following::img
+    headline                         xpath              //h1[1]
+    text                             xpath              (//h1[1]/following::*[string-length( text()) > 150])[1]
+    video-*                          xpath              (//div/video)[1] | (//div[contains(@src, 'mp4')])[1]
 
 
 = Picture check =
     @on *
         picture-*:
-            height > 400 px
+            width 400 to 1000 px
             
 = Video check =
+    @on *
+        video-1:
+            visible
 
 = Font size check =
+    @on *
+        headline:
+            css font-size is "27px"
+            css font-size is "28px"
+            css font-size is "29px"
+            css font-size is "30px"
+            css font-size is "31px"
+            css font-size is "32px"
+            css font-size is "33px"
+            css font-size is "34px"
+            css font-size is "35px"
+            css font-size is "36px"
+        text:
+            css font-size is "13px"
+            css font-size is "14px"
+            css font-size is "15px"
+            css font-size is "16px"
+            css font-size is "17px"
+            css font-size is "18px"
 
 = Font type check =
+    @on *
+        headline:
+            css font-family contains "sans-serif"
+        text:
+            css font-family contains "sans-serif"
 
 = Advertisements check =
