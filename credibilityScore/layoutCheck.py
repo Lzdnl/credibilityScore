@@ -51,4 +51,4 @@ def layoutCheck():
             else:
                 print("Serif fonts used in text")
 
-layoutCheck()
+#layoutCheck()

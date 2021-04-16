@@ -27,8 +27,8 @@ def clean_website_text():
                 article_paragraphs = article_paragraphs[:(article_paragraphs.index(paragraphs[i]))+1]
             break
 
-    for i in range(len(article_paragraphs)):
-        print(i, article_paragraphs[i])
+    #for i in range(len(article_paragraphs)):
+    #    print(i, article_paragraphs[i])
 
     f.close()
 
