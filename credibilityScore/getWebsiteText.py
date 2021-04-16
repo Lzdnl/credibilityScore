@@ -68,9 +68,9 @@ def get_website_text(url):
     if len(website_author) == 0:
         website_properties_author = website_properties.write("\nNo author found \n")
     if len(opinion_section_exists) > 0:
-        website_properties_opinion_section = website_properties.write("True")
+        website_properties_opinion_section = website_properties.write("True\n")
     if len(opinion_section_exists) == 0:
-        website_properties_opinion_section = website_properties.write("False")
+        website_properties_opinion_section = website_properties.write("False\n")
     website_properties.close()
 
    # website_subtitle_file = open("websiteSubTitle.txt", "w")

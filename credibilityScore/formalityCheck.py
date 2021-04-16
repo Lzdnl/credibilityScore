@@ -23,7 +23,11 @@ def formality_check():
     # Count total number of words (will be used for normalization of spelling mistakes)
     for paragraph in article_paragraphs:
         words = paragraph.split(" ")
-        total_word_count += len(words)
+        total_word_count = total_word_count + len(words)
+
+    wProp = open("websiteProperties.txt", "a")
+    wProp.writelines(str(total_word_count) + "\n")
+    wProp.close()
 
     # Check for exclamation or question marks in the title
     marks_count_title = article_paragraphs[0].count('!')

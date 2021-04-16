@@ -25,7 +25,7 @@ def clean_website_text():
         if paragraphs[i] in article_paragraphs:
             if paragraphs[i+1] not in article_paragraphs and paragraphs[i+2] not in article_paragraphs and paragraphs[i+3] not in article_paragraphs:
                 article_paragraphs = article_paragraphs[:(article_paragraphs.index(paragraphs[i]))+1]
-        break
+            break
 
     for i in range(len(article_paragraphs)):
         print(i, article_paragraphs[i])

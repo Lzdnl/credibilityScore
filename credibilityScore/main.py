@@ -2,7 +2,9 @@ import createGalenTest
 import getWebsiteText
 import cleanWebsiteText
 import formalityCheck
+import layoutCheck
 import neutralityCheck
+import runGalenTest
 import transparencyCheck
 
 getWebsiteText.get_website_text(input("Enter URL: "))
@@ -11,5 +13,5 @@ formalityCheck.formality_check()
 neutralityCheck.neutrality_check()
 transparencyCheck.transparency_check()
 createGalenTest.createGalenTest()
-#run galen test
-#layoutCheck.py
+runGalenTest.runGalenTest()
+layoutCheck.layoutCheck()

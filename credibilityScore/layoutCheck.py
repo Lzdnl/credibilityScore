@@ -30,8 +30,10 @@ def layoutCheck():
                 print("Unbalanced font size for headline")
         if (galenCheckDict[i])['name'] == 'Font size check for text':
             fontObjects = str((galenCheckDict[i])['objects'])
-            if fontObjects.count('\'status\': \'info\'') > 1:
+            if fontObjects.count('\'status\': \'info\'') > 0:
                 print("Balanced font size for text")
+            if fontObjects.count('\"text\" is not visible on page') > 0:
+                print("Text wasn't properly identified")
             else:
                 print("Unbalanced font size for text")
         if (galenCheckDict[i])['name'] == 'Font type check for headline':
@@ -42,9 +44,11 @@ def layoutCheck():
                 print("Sans-serif fonts used in headline")
         if (galenCheckDict[i])['name'] == 'Font type check for text':
             fontTypeObjects = str((galenCheckDict[i])['objects'])
-            if fontTypeObjects.count('\'status\': \'info\'') == 0:
-                print("Serif fonts used in text")
-            else:
+            if fontTypeObjects.count('\'status\': \'info\'') > 0:
                 print("Sans-serif fonts used in text")
+            if fontTypeObjects.count('\"text\" is not visible on page') > 0:
+                print("Text wasn't properly identified")
+            else:
+                print("Serif fonts used in text")
 
 layoutCheck()

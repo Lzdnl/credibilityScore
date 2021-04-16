@@ -103,4 +103,4 @@ def transparency_check():
     transparency_test_results.close()
 
 
-transparency_check()
+#transparency_check()

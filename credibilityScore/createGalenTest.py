@@ -8,4 +8,4 @@ def createGalenTest():
     galenTest.write("layoutCheck\n    jsfactory ./Layout/mydriver.js " + website_url + " 768x576\n" + "        wait 1s\n        check ./Layout/layoutCheck.gspec --include \"all\"")
     galenTest.close()
 
-createGalenTest()
+#createGalenTest()
