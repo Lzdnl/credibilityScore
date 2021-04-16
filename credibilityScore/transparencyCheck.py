@@ -12,6 +12,7 @@ def transparency_check():
     article_links = []
     link_text = []
     broken_links = []
+    transparency_results = {}
 
     # Keeping only relevant links - links which are surrounded by text of the article.
     # Excluding links where the text and the surrounding text are the exact same
@@ -77,30 +78,43 @@ def transparency_check():
 
     marked_as_opinion = url_marked_as_opinion or opinion_section_exists
 
-    open("transparencyTestResults.txt", "w").close()
+    transparency_results['num_refs'] = num_references
+    transparency_results['num_refs_external'] = num_references-internal_reference_count
+    transparency_results['num_refs_internal'] = internal_reference_count
+    transparency_results['num_broken_links'] = len(broken_links)
+    transparency_results['num_direct_quotes'] = quotes_count
+    transparency_results['author_found'] = author_found
+    transparency_results['marked_as_opinion'] = marked_as_opinion
+    transparency_results['ref_links'] = article_links
+    transparency_results['broken_links'] = broken_links
 
-    transparency_test_results = open("transparencyTestResults.txt", "a")
-    line1_result = transparency_test_results.write(str(num_references))
-    line1_message = transparency_test_results.write(' references in total\n')
+    #open("transparencyTestResults.txt", "w").close()
 
-    line2_result = transparency_test_results.write(str(num_references-internal_reference_count))
-    line2_message = transparency_test_results.write(' external references\n')
+    #transparency_test_results = open("transparencyTestResults.txt", "a")
+    #line1_result = transparency_test_results.write(str(num_references))
+    #line1_message = transparency_test_results.write(' references in total\n')
 
-    line3_result = transparency_test_results.write(str(internal_reference_count))
-    line3_message = transparency_test_results.write(' internal references\n')
+    #line2_result = transparency_test_results.write(str(num_references-internal_reference_count))
+    #line2_message = transparency_test_results.write(' external references\n')
 
-    line4_result = transparency_test_results.write(str(len(broken_links)))
-    line4_message = transparency_test_results.write(' broken links\n')
+    #line3_result = transparency_test_results.write(str(internal_reference_count))
+    #line3_message = transparency_test_results.write(' internal references\n')
 
-    line5_result = transparency_test_results.write(str(quotes_count))
-    line5_message = transparency_test_results.write(' instances of direct quoting\n')
+    #line4_result = transparency_test_results.write(str(len(broken_links)))
+    #line4_message = transparency_test_results.write(' broken links\n')
 
-    line6_result = transparency_test_results.write(str(author_found))
+    #line5_result = transparency_test_results.write(str(quotes_count))
+    #line5_message = transparency_test_results.write(' instances of direct quoting\n')
 
-    line7_message = transparency_test_results.write('Article marked as opinion: ')
-    line7_result = transparency_test_results.write(str(marked_as_opinion))
+    #line6_result = transparency_test_results.write(str(author_found))
 
-    transparency_test_results.close()
+    #line7_message = transparency_test_results.write('Article marked as opinion: ')
+    #line7_result = transparency_test_results.write(str(marked_as_opinion))
 
+    #transparency_test_results.close()
 
-#transparency_check()
+    print(transparency_results)
+
+    return(transparency_results)
+
+transparency_check()
