@@ -5,11 +5,16 @@ import re
 def neutrality_check():
 
     superlative_count = 0
+    superlatives_found = []
     banned_words_dict = {}
+    banned_words_found = set([])
     emotion_lexicon_dictionary = collections.defaultdict(list)
     emotion_words_text_dictionary = {}
+    emotion_words_found = set([])
     slur_count = 0
+    slurs_found = set([])
     total_word_number = 0
+    neutrality_results = {}
 
     # Read article text into list
     with open('cleanedTextFile.txt') as cleaned_text_file:
@@ -18,7 +23,7 @@ def neutrality_check():
     article_paragraphs = [paragraph.strip() for paragraph in article_paragraphs]
 
     # Read superlative text file into list
-    with open('superlatives.txt') as superlatives:
+    with open('./Lexicons/superlatives.txt') as superlatives:
         superlatives_list = superlatives.readlines()
 
     # Clean superlative list
@@ -31,7 +36,7 @@ def neutrality_check():
     # print(superlatives_list)
 
     # Read Google banned words into list
-    with open('google_banned_words_2021.txt') as banned_words:
+    with open('./Lexicons/google_banned_words_2021.txt') as banned_words:
         banned_words_list = banned_words.readlines()
 
     # Clean Google banned words list
@@ -40,7 +45,7 @@ def neutrality_check():
 
     banned_words_set = set(banned_words_list)
 
-    with open('NRC-Emotion-Lexicon-Wordlevel-v0.92.txt') as nrc_emotion_lexicon:
+    with open('./Lexicons/NRC-Emotion-Lexicon-Wordlevel-v0.92.txt') as nrc_emotion_lexicon:
         emotion_lexicon = nrc_emotion_lexicon.readlines()
 
     for i in range(len(emotion_lexicon)):
@@ -52,7 +57,7 @@ def neutrality_check():
             emotion_lexicon_dictionary[word[0]].append(word[1])
             #print(word)
 
-    with open('racial_slurs.txt') as racial_slurs:
+    with open('./Lexicons/racial_slurs.txt') as racial_slurs:
         racial_slur_list = racial_slurs.readlines()
 
     for i in range(len(racial_slur_list)):
@@ -82,6 +87,8 @@ def neutrality_check():
         # count number of superlatives
         for superlative in superlatives_list:
             superlative_count += count_overlapping(cleaned_words, superlative)
+            if superlative in cleaned_words:
+                superlatives_found.append(superlative)
 
         # Count number of occurrence for each bad word in list, store count in dictionary
         # Some bad words appear in the list multiple times, as parts of expressions
@@ -98,6 +105,8 @@ def neutrality_check():
         # Check if text contains words with emotional value (from EmoLex)
         # Count occurrences of emotional words for each emotion and the two valences
         for key in emotion_lexicon_dictionary:
+            if " " + key + " " in cleaned_words:
+                emotion_words_found.add(key)
             emotion_word_occurrence = count_overlapping(cleaned_words, " " + key + " ")
             if emotion_word_occurrence > 0:
                 # print(key, emotion_lexicon_dictionary[key], emotion_word_occurrence)
@@ -109,6 +118,8 @@ def neutrality_check():
 
         for slur in racial_slur_list:
             slur_count += count_overlapping(cleaned_words, " " + slur.lower() + " ")
+            if " " + slur.lower() + " " in cleaned_words:
+                slurs_found.add(slur)
 
     # print(emotion_words_text_dictionary)
 
@@ -121,6 +132,9 @@ def neutrality_check():
 
     banned_words_final_count = banned_words_dict.copy()
 
+    for key in banned_words_final_count.keys():
+        banned_words_found.add(key)
+
     # Delete bad words which only appear as part of expressions from the dictionary
     # (their value is 0 because they don't appear alone)
     for key in banned_words_dict:
@@ -131,30 +145,46 @@ def neutrality_check():
     #     if key != "negative" and key != "positive":
     #         print(emotion_words_text_dictionary[key], "instances of words corresponding to the emotion", key, "found")
 
-    open("neutralityTestResults.txt", "w").close()
+    neutrality_results['num_words'] = total_word_number
+    neutrality_results['num_superlatives'] = superlative_count
+    neutrality_results['num_banned_words'] = str(sum(banned_words_final_count.values()))
+    neutrality_results['num_emotional'] = emotion_words_text_dictionary["positive"] + emotion_words_text_dictionary["negative"]
+    neutrality_results['num_emotion_positive'] = emotion_words_text_dictionary["positive"]
+    neutrality_results['num_emotion_negative'] = emotion_words_text_dictionary["negative"]
+    neutrality_results['num_emotion_joy'] = emotion_words_text_dictionary["joy"]
+    neutrality_results['num_emotion_fear'] = emotion_words_text_dictionary["fear"]
+    neutrality_results['num_slurs'] = slur_count
+    neutrality_results['superlatives_found'] = superlatives_found
+    neutrality_results['banned_words_found'] = list(banned_words_found)
+    neutrality_results['emotional_words_found'] = list(emotion_words_found)
+    neutrality_results['slurs_found'] = list(slurs_found)
 
-    neutrality_test_results = open("neutralityTestResults.txt", "a")
+    #open("neutralityTestResults.txt", "w").close()
+
+    #neutrality_test_results = open("neutralityTestResults.txt", "a")
 
     # Copy the results of our neutrality check to the results file -> we will use it in the test cases
-    line1_result = neutrality_test_results.write(str(superlative_count))
-    line1_message = neutrality_test_results.write(' superlatives identified\n')
+    #line1_result = neutrality_test_results.write(str(superlative_count))
+    #line1_message = neutrality_test_results.write(' superlatives identified\n')
 
-    line2_result = neutrality_test_results.write(str(len(banned_words_final_count)))
-    line2_message = neutrality_test_results.write(' profanities found in ')
-    line2_result2 = neutrality_test_results.write(str(sum(banned_words_final_count.values())))
-    line2_message2 = neutrality_test_results.write(' instances\n')
+    #line2_result = neutrality_test_results.write(str(len(banned_words_final_count)))
+    #line2_message = neutrality_test_results.write(' profanities found in ')
+    #line2_result2 = neutrality_test_results.write(str(sum(banned_words_final_count.values())))
+    #line2_message2 = neutrality_test_results.write(' instances\n')
 
-    emotional_word_ratio = emotion_words_text_dictionary["positive"]/total_word_number + emotion_words_text_dictionary["negative"]/total_word_number
-    if emotional_word_ratio >= 0.05:
-        line3_result = neutrality_test_results.write("Unacceptable emotional word ratio\n")
-    else:
-        line3_result = neutrality_test_results.write("Acceptable emotional word ratio\n")
+    #emotional_word_ratio = emotion_words_text_dictionary["positive"]/total_word_number + emotion_words_text_dictionary["negative"]/total_word_number
+    #if emotional_word_ratio >= 0.05:
+    #    line3_result = neutrality_test_results.write("Unacceptable emotional word ratio\n")
+    #else:
+    #    line3_result = neutrality_test_results.write("Acceptable emotional word ratio\n")
 
     # line4_result = neutrality_test_results.write(str(emotion_words_text_dictionary["negative"]/total_word_number))
     # line4_message = neutrality_test_results.write(' negative emotion word ratio\n')
 
-    line4_result = neutrality_test_results.write(str(slur_count))
-    line4_message1 = neutrality_test_results.write(' slurs identified\n')
+    #line4_result = neutrality_test_results.write(str(slur_count))
+    #line4_message1 = neutrality_test_results.write(' slurs identified\n')
+
+    return neutrality_results
 
 # https://stackoverflow.com/questions/2970520/string-count-with-overlapping-occurrences
 def count_overlapping(string, sub):
@@ -166,4 +196,4 @@ def count_overlapping(string, sub):
         else:
             return count
 
-#neutrality_check()
+neutrality_check()
