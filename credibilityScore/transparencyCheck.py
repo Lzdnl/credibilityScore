@@ -13,6 +13,7 @@ def transparency_check():
     link_text = []
     broken_links = []
     transparency_results = {}
+    author_found = False
 
     # Keeping only relevant links - links which are surrounded by text of the article.
     # Excluding links where the text and the surrounding text are the exact same
@@ -44,7 +45,9 @@ def transparency_check():
     wProp.close()
 
     with open('websiteProperties.txt') as wProp:
-        author_found = wProp.readlines()[1]
+        if wProp.readlines()[1].strip("\n") == "Author found ":
+            author_found = True
+
     wProp.close()
 
     for link in article_links:
@@ -73,7 +76,7 @@ def transparency_check():
         quotes_count += int(text_block.count("\"")/2)
 
     with open('websiteProperties.txt') as wProp:
-        opinion_section_exists = wProp.readlines()[2]
+        opinion_section_exists = wProp.readlines()[2].strip("\n")
     wProp.close()
 
     marked_as_opinion = url_marked_as_opinion or opinion_section_exists
