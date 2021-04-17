@@ -28,13 +28,16 @@ def formality_check():
         words = paragraph.split(" ")
         total_word_count = total_word_count + len(words)
 
-    wProp = open("websiteProperties.txt", "a")
-    wProp.writelines(str(total_word_count) + "\n")
-    wProp.close()
+    formality_results['num_words'] = total_word_count
+    #wProp = open("websiteProperties.txt", "a")
+    #wProp.writelines(str(total_word_count) + "\n")
+    #wProp.close()
 
     # Check for exclamation or question marks in the title
     marks_count_title = article_paragraphs[0].count('!')
     marks_count_title += article_paragraphs[0].count('?')
+
+    formality_results['num_marks_title'] = marks_count_title
 
     for paragraph in article_paragraphs:
         # Check for consecutive exclamation or question marks in each paragraph
@@ -42,6 +45,8 @@ def formality_check():
         consecutive_marks_count += paragraph.count('??')
         # The literature say it also makes sense to count single instances of '?'
         marks_count += paragraph.count('?')
+
+    formality_results['num_marks_text'] = marks_count - article_paragraphs[0].count('?')
 
     # Check for CAPS LOCK usage, count how many words are written in caps lock
     for paragraph in article_paragraphs:
@@ -62,6 +67,7 @@ def formality_check():
             if word.isalpha():
                 if word.lower() not in unique_words:
                     unique_words.add(word.lower())
+
 
     # Check for spelling mistakes
     for paragraph in article_paragraphs:
@@ -106,7 +112,6 @@ def formality_check():
     formality_results['num_spelling_errors_title'] = title_spelling_mistakes_count
     formality_results['num_consecutive_marks'] = consecutive_marks_count
     formality_results['num_marks_title'] = marks_count_title
-    formality_results['num_marks_text'] = marks_count - marks_count_title
     formality_results['num_all_caps'] = all_caps_words_count
     formality_results['lexical_richness'] = len(unique_words)/total_word_count
     formality_results['misspelled_words'] = incorrect_words
