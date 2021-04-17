@@ -12,43 +12,44 @@ def layoutCheck():
 
     # print(galenCheckDict[0])
 
+    layout_results = {
+        'num_photos': 0,
+        'video_present': False,
+        'headline_font_size': False,
+        'text_font_size': False,
+        'headline_font_type': False,
+        'text_font_type': False
+    }
+
     for i in range(len(galenCheckDict)):
         if (galenCheckDict[i])['name'] == 'Picture check':
             pictureObjects = str((galenCheckDict[i])['objects'])
-            print(pictureObjects.count('\'status\': \'info\''), "pictures found in article")
+            layout_results['num_photos'] = pictureObjects.count('\'status\': \'info\'')
         if (galenCheckDict[i])['name'] == 'Video check':
             videoObjects = str((galenCheckDict[i])['objects'])
             if videoObjects.count('\'status\': \'info\'') == 1:
-                print("Video found")
-            else:
-                print("No video found")
+                layout_results['video_present'] = True
         if (galenCheckDict[i])['name'] == 'Font size check for headline':
             fontObjects = str((galenCheckDict[i])['objects'])
-            if fontObjects.count('\'status\': \'info\'') > 1:
-                print("Balanced font size for headline")
-            else:
-                print("Unbalanced font size for headline")
+            if fontObjects.count('\'status\': \'info\'') > 0:
+                layout_results['headline_font_size'] = True
         if (galenCheckDict[i])['name'] == 'Font size check for text':
             fontObjects = str((galenCheckDict[i])['objects'])
             if fontObjects.count('\'status\': \'info\'') > 0:
-                print("Balanced font size for text")
+                layout_results['text_font_size'] = True
             if fontObjects.count('\"text\" is not visible on page') > 0:
-                print("Text wasn't properly identified")
-            else:
-                print("Unbalanced font size for text")
+                layout_results['text_font_size'] = 'not identified'
         if (galenCheckDict[i])['name'] == 'Font type check for headline':
             fontTypeObjects = str((galenCheckDict[i])['objects'])
             if fontTypeObjects.count('\'status\': \'info\'') == 0:
-                print("Serif fonts used in headline")
-            else:
-                print("Sans-serif fonts used in headline")
+                layout_results['headline_font_type'] = True
         if (galenCheckDict[i])['name'] == 'Font type check for text':
             fontTypeObjects = str((galenCheckDict[i])['objects'])
-            if fontTypeObjects.count('\'status\': \'info\'') > 0:
-                print("Sans-serif fonts used in text")
+            if fontTypeObjects.count('\'status\': \'info\'') == 0:
+                layout_results['text_font_type'] = True
             if fontTypeObjects.count('\"text\" is not visible on page') > 0:
-                print("Text wasn't properly identified")
-            else:
-                print("Serif fonts used in text")
+                layout_results['text_font_type'] = 'not identified'
+
+    return(layout_results)
 
 #layoutCheck()

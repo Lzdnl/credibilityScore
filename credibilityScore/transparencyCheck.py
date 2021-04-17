@@ -116,8 +116,6 @@ def transparency_check():
 
     #transparency_test_results.close()
 
-    print(transparency_results)
-
     return(transparency_results)
 
-transparency_check()
+#transparency_check()
