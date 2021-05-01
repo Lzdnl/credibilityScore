@@ -1,13 +1,13 @@
-import formalityCheck
-import neutralityCheck
-import transparencyCheck
 import layoutCheck
 
-def calculateScore():
 
-    print(formalityCheck.formality_check())
-    print(neutralityCheck.neutrality_check())
-    print(transparencyCheck.transparency_check())
-    print(layoutCheck.layoutCheck())
+def calculate_score():
 
-calculateScore()
+    website_properties = layoutCheck.layoutCheck()
+
+    print("Calculating score...")
+
+    print(website_properties)
+
+
+calculate_score()

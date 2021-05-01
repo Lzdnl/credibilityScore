@@ -1,3 +1,4 @@
+import cleanWebsiteText
 from autocorrect import Speller
 import re
 
@@ -5,7 +6,7 @@ import re
 def formality_check():
 
     marks_count_title = 0
-    marks_count = 0
+    marks_count_text = 0
     consecutive_marks_count = 0
     all_caps_words_count = 0
     capitalized_words = []
@@ -13,40 +14,31 @@ def formality_check():
     incorrect_words = []
     title_spelling_mistakes_count = 0
     unique_words = set([])
-    total_word_count = 0
-    formality_results = {}
 
     spell = Speller(lang='en')
 
-    with open('cleanedTextFile.txt') as cleaned_text_file:
-        article_paragraphs = cleaned_text_file.readlines()
+    website_properties = cleanWebsiteText.clean_website_text()
 
-    article_paragraphs = [paragraph.strip() for paragraph in article_paragraphs]
+    print("Formality check...")
 
-    # Count total number of words (will be used for normalization of spelling mistakes)
-    for paragraph in article_paragraphs:
-        words = paragraph.split(" ")
-        total_word_count = total_word_count + len(words)
+    cleaned_text = website_properties['cleaned_text']
 
-    formality_results['num_words'] = total_word_count
-    #wProp = open("websiteProperties.txt", "a")
-    #wProp.writelines(str(total_word_count) + "\n")
-    #wProp.close()
+    article_paragraphs = [paragraph.strip() for paragraph in cleaned_text]
 
     # Check for exclamation or question marks in the title
-    marks_count_title = article_paragraphs[0].count('!')
-    marks_count_title += article_paragraphs[0].count('?')
+    marks_count_title = website_properties['title'].count('!')
+    marks_count_title += website_properties['title'].count('?')
 
-    formality_results['num_marks_title'] = marks_count_title
+    website_properties['num_marks_title'] = marks_count_title
 
     for paragraph in article_paragraphs:
         # Check for consecutive exclamation or question marks in each paragraph
         consecutive_marks_count += paragraph.count('!!')
         consecutive_marks_count += paragraph.count('??')
         # The literature say it also makes sense to count single instances of '?'
-        marks_count += paragraph.count('?')
+        marks_count_text += paragraph.count('?')
 
-    formality_results['num_marks_text'] = marks_count - article_paragraphs[0].count('?')
+    website_properties['num_marks_text'] = marks_count_text\
 
     # Check for CAPS LOCK usage, count how many words are written in caps lock
     for paragraph in article_paragraphs:
@@ -68,10 +60,7 @@ def formality_check():
                 if word.lower() not in unique_words:
                     unique_words.add(word.lower())
 
-
-    # Check for spelling mistakes
-    for paragraph in article_paragraphs:
-        words = paragraph.split(' ')
+        # Check for spelling mistakes
 
         for i in range(len(words)):
 
@@ -85,7 +74,7 @@ def formality_check():
             # exclude acronyms and common names by looking for words which begin with a majuscule
             # and are not at the beginning of a sentence
             if words[i] != '':
-                if (words[i])[0].islower() or i==0:
+                if (words[i])[0].islower() or i == 0:
                     if words[i] != spell(words[i]):
                         if words[i] not in incorrect_words:
                             incorrect_words.append(words[i])
@@ -95,7 +84,7 @@ def formality_check():
                         if words[i] not in incorrect_words:
                             incorrect_words.append(words[i])
 
-    title_words = article_paragraphs[0].split(' ')
+    title_words = website_properties['title'].split(' ')
 
     for i in range(len(title_words)):
         title_words[i] = re.sub('[.:;,!?(){}<>]', '', title_words[i])
@@ -106,51 +95,16 @@ def formality_check():
 
         if (title_words[i]) != spell(title_words[i]):
             title_spelling_mistakes_count += 1
-            # print(title_words[i])
 
-    formality_results['num_spelling_errors'] = len(incorrect_words)
-    formality_results['num_spelling_errors_title'] = title_spelling_mistakes_count
-    formality_results['num_consecutive_marks'] = consecutive_marks_count
-    formality_results['num_marks_title'] = marks_count_title
-    formality_results['num_all_caps'] = all_caps_words_count
-    formality_results['lexical_richness'] = len(unique_words)/total_word_count
-    formality_results['misspelled_words'] = incorrect_words
-    formality_results['capitalized_words'] = capitalized_words
+    website_properties['form_num_spelling_errors'] = len(incorrect_words)
+    website_properties['form_num_spelling_errors_title'] = title_spelling_mistakes_count
+    website_properties['form_num_consecutive_marks'] = consecutive_marks_count
+    website_properties['form_num_marks_title'] = marks_count_title
+    website_properties['form_num_all_caps'] = all_caps_words_count
+    website_properties['form_lexical_richness'] = len(unique_words)/website_properties['num_words']
+    website_properties['form_misspelled_words'] = incorrect_words
+    website_properties['form_capitalized_words'] = capitalized_words
 
-    # Clear the file if there's already something written in it
-    #open("formalityTestResults.txt", "w").close()
+    return website_properties
 
-    #formality_test_results = open("formalityTestResults.txt", "a")
-
-    # Copy the results of our formality check to the results file -> we will use it in the test cases
-    #line1_result = formality_test_results.write(str(marks_count_title))
-    #line1_message = formality_test_results.write(' ! or ? in title\n')
-
-    #line2_result = formality_test_results.write(str(marks_count))
-    #line2_message = formality_test_results.write(' ? in total\n')
-
-    #line3_result = formality_test_results.write(str(consecutive_marks_count))
-    #line3_message = formality_test_results.write(' consecutive ! or ? \n')
-
-    #line4_result = formality_test_results.write(str(all_caps_words_count))
-    #line4_message = formality_test_results.write( ' words in all caps found \n')
-
-    #line5_result = formality_test_results.write(str(title_spelling_mistakes_count))
-    #line5_message = formality_test_results.write(' spelling mistakes found in title \n')
-
-    #if spelling_error_rate >= 1:
-    #    line6 = formality_test_results.write('Unacceptable error rate \n')
-    #else:
-    #    line6 = formality_test_results.write('Acceptable error rate \n')
-
-    #if lexical_richness > 0.4:
-    #    line7 = formality_test_results.write('Higher than average lexical density')
-    #else:
-    #    line7 = formality_test_results.write('Average or less than average lexical richness')
-
-    #formality_test_results.close()
-
-    return formality_results
-
-#formality_check()
 

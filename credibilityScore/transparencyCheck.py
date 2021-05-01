@@ -1,3 +1,4 @@
+import neutralityCheck
 import time
 import requests
 import re
@@ -5,20 +6,19 @@ import re
 
 def transparency_check():
 
-    with open('allLinks.txt') as all_links:
-        links_with_info = all_links.readlines()
-    all_links.close()
+    website_properties = neutralityCheck.neutrality_check()
+
+    print("Transparency check...")
 
     article_links = []
     link_text = []
     broken_links = []
-    transparency_results = {}
-    author_found = False
+    internal_reference_count = 0
 
     # Keeping only relevant links - links which are surrounded by text of the article.
     # Excluding links where the text and the surrounding text are the exact same
     # Excluding links from disclaimers
-    for link_with_info in links_with_info:
+    for link_with_info in website_properties['all_links']:
         link_info = link_with_info.split("|")
         if len(link_info)>2 and link_info[2].__contains__(".") and len(link_info[2].split())>15:
             if not (link_info[2].lower().__contains__("all rights reserved")):
@@ -32,28 +32,17 @@ def transparency_check():
     num_references = len(article_links)
 
     # Number of internal references
-    internal_reference_count = 0
-
-    with open('websiteProperties.txt') as wProp:
-        website_url = wProp.readlines()[0]
-        url_marked_as_opinion = website_url.__contains__('opinion')
-        url_components = website_url.split("/")
-        for component in url_components:
-            if component.count(".") >= 2:
-                base_domain = component.split(".")[1] + "." + component.split(".")[2]
-                break
-    wProp.close()
-
-    with open('websiteProperties.txt') as wProp:
-        if wProp.readlines()[1].strip("\n") == "Author found ":
-            author_found = True
-
-    wProp.close()
+    url_components = website_properties['url'].split("/")
+    for component in url_components:
+        if component.count(".") >= 2:
+            base_domain = component.split(".")[1] + "." + component.split(".")[2]
+            break
 
     for link in article_links:
         if link.__contains__(base_domain):
             internal_reference_count += 1
 
+    print("Checking for broken links. This might take a while...")
     # Check for broken links, not doing it with Selenium because it would slow the program down too much
     # https://stackoverflow.com/questions/1140661/what-s-the-best-way-to-get-an-http-response-code-from-a-url
     for link in article_links:
@@ -63,10 +52,10 @@ def transparency_check():
                 broken_links.append(link)
         except requests.ConnectionError:
             print("failed to connect")
+        except requests.exceptions.InvalidSchema:
+            print(link, "is invalid")
 
-    # Check for direct quotes
-    with open('cleanedTextFile.txt') as cleanedTextFile:
-        article_text = cleanedTextFile.readlines()
+    article_text = website_properties['cleaned_text']
 
     quotes_count = 0
 
@@ -75,47 +64,15 @@ def transparency_check():
         text_block = re.sub("[«»„“〞〟＂”]", "\"", text_block)
         quotes_count += int(text_block.count("\"")/2)
 
-    with open('websiteProperties.txt') as wProp:
-        opinion_section_exists = wProp.readlines()[2].strip("\n")
-    wProp.close()
+    if website_properties['url'].__contains__('opinion'):
+        website_properties['tran_marked_as_opinion'] = True
 
-    marked_as_opinion = url_marked_as_opinion or opinion_section_exists
+    website_properties['tran_num_refs'] = num_references
+    website_properties['tran_num_refs_external'] = num_references-internal_reference_count
+    website_properties['tran_num_refs_internal'] = internal_reference_count
+    website_properties['tran_num_broken_links'] = len(broken_links)
+    website_properties['tran_num_direct_quotes'] = quotes_count
+    website_properties['tran_ref_links'] = article_links
+    website_properties['tran_broken_links'] = broken_links
 
-    transparency_results['num_refs'] = num_references
-    transparency_results['num_refs_external'] = num_references-internal_reference_count
-    transparency_results['num_refs_internal'] = internal_reference_count
-    transparency_results['num_broken_links'] = len(broken_links)
-    transparency_results['num_direct_quotes'] = quotes_count
-    transparency_results['author_found'] = author_found
-    transparency_results['marked_as_opinion'] = marked_as_opinion
-    transparency_results['ref_links'] = article_links
-    transparency_results['broken_links'] = broken_links
-
-    #open("transparencyTestResults.txt", "w").close()
-
-    #transparency_test_results = open("transparencyTestResults.txt", "a")
-    #line1_result = transparency_test_results.write(str(num_references))
-    #line1_message = transparency_test_results.write(' references in total\n')
-
-    #line2_result = transparency_test_results.write(str(num_references-internal_reference_count))
-    #line2_message = transparency_test_results.write(' external references\n')
-
-    #line3_result = transparency_test_results.write(str(internal_reference_count))
-    #line3_message = transparency_test_results.write(' internal references\n')
-
-    #line4_result = transparency_test_results.write(str(len(broken_links)))
-    #line4_message = transparency_test_results.write(' broken links\n')
-
-    #line5_result = transparency_test_results.write(str(quotes_count))
-    #line5_message = transparency_test_results.write(' instances of direct quoting\n')
-
-    #line6_result = transparency_test_results.write(str(author_found))
-
-    #line7_message = transparency_test_results.write('Article marked as opinion: ')
-    #line7_result = transparency_test_results.write(str(marked_as_opinion))
-
-    #transparency_test_results.close()
-
-    return(transparency_results)
-
-#transparency_check()
+    return(website_properties)
