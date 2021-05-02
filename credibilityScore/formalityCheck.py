@@ -29,7 +29,7 @@ def formality_check():
     marks_count_title = website_properties['title'].count('!')
     marks_count_title += website_properties['title'].count('?')
 
-    website_properties['num_marks_title'] = marks_count_title
+    website_properties['form_num_marks_title'] = marks_count_title
 
     for paragraph in article_paragraphs:
         # Check for consecutive exclamation or question marks in each paragraph
@@ -38,7 +38,7 @@ def formality_check():
         # The literature say it also makes sense to count single instances of '?'
         marks_count_text += paragraph.count('?')
 
-    website_properties['num_marks_text'] = marks_count_text\
+    website_properties['form_num_marks_text'] = marks_count_text
 
     # Check for CAPS LOCK usage, count how many words are written in caps lock
     for paragraph in article_paragraphs:
@@ -65,7 +65,7 @@ def formality_check():
         for i in range(len(words)):
 
             # Remove special characters from beginning and end of words
-            words[i] = re.sub('[.:;,!?(){}<>]', '', words[i])
+            words[i] = re.sub('[.:;,!?(){}<>"]', '', words[i])
             words[i] = words[i].replace('''”''', '')
             words[i] = words[i].replace('''“''', '')
             words[i] = words[i].replace('[', '')
@@ -99,7 +99,6 @@ def formality_check():
     website_properties['form_num_spelling_errors'] = len(incorrect_words)
     website_properties['form_num_spelling_errors_title'] = title_spelling_mistakes_count
     website_properties['form_num_consecutive_marks'] = consecutive_marks_count
-    website_properties['form_num_marks_title'] = marks_count_title
     website_properties['form_num_all_caps'] = all_caps_words_count
     website_properties['form_lexical_richness'] = len(unique_words)/website_properties['num_words']
     website_properties['form_misspelled_words'] = incorrect_words
