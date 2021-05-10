@@ -89,8 +89,12 @@ def calculate_score():
 
     tran_score_citations = (tran_score_references + tran_score_direct_quotes) / website_properties['num_sentences']
 
-    tran_score_external_references = website_properties['tran_num_refs_external'] / website_properties['tran_num_refs']
-    tran_score_broken_links = 1- (website_properties['tran_num_broken_links'] / website_properties['tran_num_refs'])
+    if website_properties['tran_num_refs'] == 0:
+        tran_score_external_references = 0
+        tran_score_broken_links = 0
+    else:
+        tran_score_external_references = website_properties['tran_num_refs_external'] / website_properties['tran_num_refs']
+        tran_score_broken_links = 1 - (website_properties['tran_num_broken_links'] / website_properties['tran_num_refs'])
 
     if website_properties['tran_author'] == True:
         tran_score_author = 1
@@ -170,4 +174,4 @@ def calculate_score():
     print("credibility_score: ", credibility_score)
 
 
-calculate_score()
+#calculate_score()
