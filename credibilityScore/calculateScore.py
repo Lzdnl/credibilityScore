@@ -101,6 +101,12 @@ def calculate_score():
     else:
         tran_score_author = 0
 
+    if website_properties['tran_marked_as_opinion'] == True:
+        tran_score_citations = 1
+        tran_score_external_references = 1
+        tran_score_broken_links = 1
+
+
     score_transparency = tran_score_citations + tran_score_external_references + tran_score_broken_links + \
                          tran_score_author
 
@@ -172,6 +178,10 @@ def calculate_score():
     credibility_score = (score_formality + score_neutrality + score_transparency + score_layout) * 10 / 16
 
     print("credibility_score: ", credibility_score)
+
+    if website_properties['tran_marked_as_opinion'] == True:
+        print("This article is an opinion piece. Language emotionality and presence of references are not taken into "
+              "account.")
 
 
 #calculate_score()
