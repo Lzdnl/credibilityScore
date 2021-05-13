@@ -53,7 +53,7 @@ def neutrality_check():
         if word.__contains__('1'):
             emotion_lexicon_dictionary[word[0]].append(word[1])
 
-    with open('./Lexicons/racial_slurs.txt') as racial_slurs:
+    with open('./Lexicons/racial_slurs_cleaned.txt') as racial_slurs:
         racial_slur_list = racial_slurs.readlines()
 
     for i in range(len(racial_slur_list)):

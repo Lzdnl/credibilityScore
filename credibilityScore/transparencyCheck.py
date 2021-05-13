@@ -33,9 +33,13 @@ def transparency_check():
 
     # Number of internal references
     url_components = website_properties['url'].split("/")
+
     for component in url_components:
         if component.count(".") >= 2:
             base_domain = component.split(".")[1] + "." + component.split(".")[2]
+            break
+        if component.count(".") == 1:
+            base_domain = component.split(".")[0] + "." + component.split(".")[1]
             break
 
     for link in article_links:
@@ -46,8 +50,9 @@ def transparency_check():
     # Check for broken links, not doing it with Selenium because it would slow the program down too much
     # https://stackoverflow.com/questions/1140661/what-s-the-best-way-to-get-an-http-response-code-from-a-url
     for link in article_links:
+        print("Checking status code for " + str(link))
         try:
-            r = requests.head(link)
+            r = requests.head(link, timeout = 10)
             if r.status_code >= 400:
                 broken_links.append(link)
         except requests.ConnectionError:

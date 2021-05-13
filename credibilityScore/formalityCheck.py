@@ -35,7 +35,7 @@ def formality_check():
         # Check for consecutive exclamation or question marks in each paragraph
         consecutive_marks_count += paragraph.count('!!')
         consecutive_marks_count += paragraph.count('??')
-        # The literature say it also makes sense to count single instances of '?'
+        # The literature says it also makes sense to count single instances of '?'
         marks_count_text += paragraph.count('?')
 
     website_properties['form_num_marks_text'] = marks_count_text
@@ -80,6 +80,7 @@ def formality_check():
                             incorrect_words.append(words[i])
                         # print(words[i])
                 elif (words[i])[0].isupper() and '.' in words[i-1] or '?' in words[i-1] or '!' in words[i-1]:
+                    # TODO shouldn't this be words[i].lower?
                     if words[i] != spell(words[i]):
                         if words[i] not in incorrect_words:
                             incorrect_words.append(words[i])
