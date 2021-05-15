@@ -13,6 +13,7 @@ def calculate_score():
 
     print("num_sentences: " + str(website_properties['num_sentences']))
     print("num_words: " + str(website_properties['num_words']))
+    print("num_unique_words" + str(website_properties['num_unique_words']))
 
     print("___________________________________________________________________________")
     print("___________________________________________________________________________")
@@ -21,7 +22,7 @@ def calculate_score():
 
     # ________________________________ Formality Score _________________________________________________________
     form_score_spelling = 1 - (website_properties['form_num_spelling_errors_title']/title_length +
-                               website_properties['form_num_spelling_errors']/website_properties['num_words'])
+                               website_properties['form_num_spelling_errors']/website_properties['num_unique_words'])
 
     if website_properties['form_num_consecutive_marks'] > 0:
         score_consecutive_marks = 0
@@ -64,7 +65,7 @@ def calculate_score():
 
     # If the article is marked as opinion, it's OK to use emotional words
     neut_score_emotional = 1- website_properties['neut_num_emotional']/website_properties['num_words']
-    if website_properties['tran_marked_as_opinion'] == True:
+    if website_properties['tran_marked_as_opinion']:
         neut_score_emotional = 1
     neut_score_banned = 1 - int(website_properties['neut_num_banned_words'])/int(website_properties['num_words'])
 
@@ -96,12 +97,12 @@ def calculate_score():
         tran_score_external_references = website_properties['tran_num_refs_external'] / website_properties['tran_num_refs']
         tran_score_broken_links = 1 - (website_properties['tran_num_broken_links'] / website_properties['tran_num_refs'])
 
-    if website_properties['tran_author'] == True:
+    if website_properties['tran_author']:
         tran_score_author = 1
     else:
         tran_score_author = 0
 
-    if website_properties['tran_marked_as_opinion'] == True:
+    if website_properties['tran_marked_as_opinion'] and website_properties['tran_author']:
         tran_score_citations = 1
         tran_score_external_references = 1
         tran_score_broken_links = 1
@@ -137,29 +138,29 @@ def calculate_score():
         else:
             lay_score_photos = 0.75
 
-    if website_properties['lay_video_present'] == True:
+    if website_properties['lay_video_present']:
         lay_score_video = 1
     else:
         lay_score_video = 0
 
-    if website_properties['lay_headline_font_size'] == True:
+    if website_properties['lay_headline_font_size']:
         lay_score_headline_size = 1
     else:
         lay_score_headline_size = 0
 
-    if website_properties['lay_text_font_size'] == True or website_properties['lay_text_font_size'] == 'not identified':
+    if website_properties['lay_text_font_size'] or website_properties['lay_text_font_size'] == 'not identified':
         lay_score_text_size = 1
     else:
         lay_score_text_size = 0
 
     lay_score_font_size = (lay_score_headline_size + lay_score_text_size) / 2
 
-    if website_properties['lay_headline_font_type'] == True:
+    if website_properties['lay_headline_font_type']:
         lay_score_headline_type = 1
     else:
         lay_score_headline_type = 0
 
-    if website_properties['lay_text_font_type'] == True or website_properties['lay_text_font_type'] == 'not identified':
+    if website_properties['lay_text_font_type'] or website_properties['lay_text_font_type'] == 'not identified':
         lay_score_text_type = 1
     else:
         lay_score_text_type = 0
@@ -179,7 +180,7 @@ def calculate_score():
 
     print("credibility_score: ", credibility_score)
 
-    if website_properties['tran_marked_as_opinion'] == True:
+    if website_properties['tran_marked_as_opinion']:
         print("This article is an opinion piece. Language emotionality and presence of references are not taken into "
               "account.")
 

@@ -9,7 +9,7 @@ def createGalenTest():
     website_url = website_properties['url']
 
     galenTest = open("./Layout/layoutCheck.test", "w")
-    galenTest.write("layoutCheck\n    jsfactory ./Layout/mydriver.js " + website_url + " 768x576\n" + "        wait 1s\n        check ./Layout/layoutCheck.gspec --include \"all\"")
+    galenTest.write("layoutCheck\n    jsfactory ./Layout/mydriver.js " + website_url + " 768x576\n" + "        wait 10s\n        check ./Layout/layoutCheck.gspec --include \"all\"")
     galenTest.close()
 
     print("Running layout tests...")

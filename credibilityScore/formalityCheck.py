@@ -104,6 +104,7 @@ def formality_check():
     website_properties['form_lexical_richness'] = len(unique_words)/website_properties['num_words']
     website_properties['form_misspelled_words'] = incorrect_words
     website_properties['form_capitalized_words'] = capitalized_words
+    website_properties['num_unique_words'] = len(unique_words)
 
     return website_properties
 

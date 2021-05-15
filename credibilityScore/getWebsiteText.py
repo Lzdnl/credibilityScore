@@ -26,7 +26,7 @@ def get_website_text(url):
     # Getting the text, title and author
     website_text = driver.find_element(By.XPATH, '//body').text
     website_title = driver.find_element(By.XPATH, '(//body//h1)[1]').text
-    website_author = driver.find_elements(By.XPATH, '(//*[contains(@*, \'author\')])[1]')
+    website_author = driver.find_elements(By.XPATH, '(//*[contains(@*, \'author\')])[1] | (//*[contains(@*, \'byline-prefix\')])[1]')
     opinion_section_exists = driver.find_elements(By.XPATH, '//h1/preceding::*[text() = \'Opinion\']')
 
     # Getting the references
