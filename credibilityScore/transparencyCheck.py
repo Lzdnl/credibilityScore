@@ -8,6 +8,8 @@ def transparency_check():
 
     website_properties = neutralityCheck.neutrality_check()
 
+    article_text = website_properties['cleaned_text']
+
     print("Transparency check...")
 
     article_links = []
@@ -24,10 +26,11 @@ def transparency_check():
                 and not link_info[0].__contains__("taboola" or "outbrain" or "@") and link_info[0].count(".") > 1:
             if not (link_info[2].lower().__contains__("all rights reserved")):
                 if link_info[1].strip() != link_info[2].strip():
+                    if link_info[2] in article_text:
                     # print(link_info[1])
                     # print(link_info[2])
-                    article_links.append(link_info[0])
-                    link_text.append(link_info[1])
+                        article_links.append(link_info[0])
+                        link_text.append(link_info[1])
 
     # Total number of references
     num_references = len(article_links)
@@ -58,12 +61,6 @@ def transparency_check():
                 broken_links.append(link)
         except:
             print("Could not connect")
-        #except requests.ConnectionError:
-        #    print("failed to connect")
-        #except requests.exceptions.InvalidSchema:
-        #    print(link, "is invalid")
-
-    article_text = website_properties['cleaned_text']
 
     quotes_count = 0
 
@@ -74,6 +71,8 @@ def transparency_check():
 
     if website_properties['url'].__contains__('opinion'):
         website_properties['tran_marked_as_opinion'] = True
+    else:
+        website_properties['tran_marked_as_opinion'] = False
 
     website_properties['tran_num_refs'] = num_references
     website_properties['tran_num_refs_external'] = num_references-internal_reference_count
@@ -83,4 +82,5 @@ def transparency_check():
     website_properties['tran_ref_links'] = article_links
     website_properties['tran_broken_links'] = broken_links
 
-    return(website_properties)
+    return website_properties
+

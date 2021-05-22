@@ -10,9 +10,8 @@ def formality_check():
     consecutive_marks_count = 0
     all_caps_words_count = 0
     capitalized_words = []
-    spelling_mistakes_count = 0
-    incorrect_words = []
-    title_spelling_mistakes_count = 0
+    incorrect_words = set([])
+    incorrect_words_title = set([])
     unique_words = set([])
 
     spell = Speller(lang='en')
@@ -41,8 +40,8 @@ def formality_check():
     website_properties['form_num_marks_text'] = marks_count_text
 
     # Check for CAPS LOCK usage, count how many words are written in caps lock
-    for paragraph in article_paragraphs:
-        words = paragraph.split(" ")
+    for i in range(1, len(article_paragraphs)):
+        words = article_paragraphs[i].split(" ")
         for i in range(len(words)-1):
             if not words[i].isalpha() and not words[i].isnumeric():
                 continue
@@ -75,15 +74,13 @@ def formality_check():
             # and are not at the beginning of a sentence
             if words[i] != '':
                 if (words[i])[0].islower() or i == 0:
-                    if words[i] != spell(words[i]):
-                        if words[i] not in incorrect_words:
-                            incorrect_words.append(words[i])
+                    if words[i].lower() != spell(words[i]).lower():
+                        incorrect_words.add(words[i])
                         # print(words[i])
-                elif (words[i])[0].isupper() and '.' in words[i-1] or '?' in words[i-1] or '!' in words[i-1]:
+                if (words[i])[0].isupper() and '.' in words[i-1] or '?' in words[i-1] or '!' in words[i-1]:
                     # TODO shouldn't this be words[i].lower?
-                    if words[i] != spell(words[i]):
-                        if words[i] not in incorrect_words:
-                            incorrect_words.append(words[i])
+                    if words[i].lower() != spell(words[i]).lower():
+                        incorrect_words.add(words[i])
 
     title_words = website_properties['title'].split(' ')
 
@@ -94,11 +91,11 @@ def formality_check():
         title_words[i] = title_words[i].replace('[', '')
         title_words[i] = title_words[i].replace(']', '')
 
-        if (title_words[i]) != spell(title_words[i]):
-            title_spelling_mistakes_count += 1
+        if (title_words[i]).lower() != spell(title_words[i]).lower():
+            incorrect_words_title.add(title_words[i])
 
     website_properties['form_num_spelling_errors'] = len(incorrect_words)
-    website_properties['form_num_spelling_errors_title'] = title_spelling_mistakes_count
+    website_properties['form_num_spelling_errors_title'] = len(incorrect_words_title)
     website_properties['form_num_consecutive_marks'] = consecutive_marks_count
     website_properties['form_num_all_caps'] = all_caps_words_count
     website_properties['form_lexical_richness'] = len(unique_words)/website_properties['num_words']
@@ -107,5 +104,6 @@ def formality_check():
     website_properties['num_unique_words'] = len(unique_words)
 
     return website_properties
+
 
 

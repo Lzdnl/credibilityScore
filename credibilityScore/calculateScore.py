@@ -13,16 +13,16 @@ def calculate_score():
 
     print("num_sentences: " + str(website_properties['num_sentences']))
     print("num_words: " + str(website_properties['num_words']))
-    print("num_unique_words" + str(website_properties['num_unique_words']))
+    print("num_unique_words: " + str(website_properties['num_unique_words']))
 
     print("___________________________________________________________________________")
     print("___________________________________________________________________________")
 
-    title_length = website_properties['title'].count(" ")
+    title_length = website_properties['title'].count(" ") + 1
 
     # ________________________________ Formality Score _________________________________________________________
-    form_score_spelling = 1 - (website_properties['form_num_spelling_errors_title']/title_length +
-                               website_properties['form_num_spelling_errors']/website_properties['num_unique_words'])
+    form_score_spelling = 1 - ((website_properties['form_num_spelling_errors_title']/title_length +
+                               website_properties['form_num_spelling_errors']/website_properties['num_unique_words'])/2)
 
     if website_properties['form_num_consecutive_marks'] > 0:
         score_consecutive_marks = 0
@@ -38,15 +38,12 @@ def calculate_score():
 
     form_score_punctuation = (score_consecutive_marks + score_marks_title + score_marks_text) / 3
 
-    if website_properties['form_num_all_caps'] > 0:
-        form_score_capitalization = 0.0
-    else:
-        form_score_capitalization = 1.0
+    form_score_capitalization = 1 - website_properties['form_num_all_caps']/website_properties['num_words']
 
     # Fake news are semantically more complex than real news
     # Real news are syntactically more complex than fake news
     form_score_semantic_complexity = 1 - website_properties['form_lexical_richness']
-    form_score_syntactic_complexity = 1 - website_properties['num_sentences']/website_properties['num_words']
+    form_score_syntactic_complexity = website_properties['num_sentences']/website_properties['num_words']
     form_score_complexity = (form_score_syntactic_complexity + form_score_semantic_complexity) / 2
 
     print("form_score_spelling: ", form_score_spelling)
@@ -106,7 +103,6 @@ def calculate_score():
         tran_score_citations = 1
         tran_score_external_references = 1
         tran_score_broken_links = 1
-
 
     score_transparency = tran_score_citations + tran_score_external_references + tran_score_broken_links + \
                          tran_score_author
@@ -184,5 +180,61 @@ def calculate_score():
         print("This article is an opinion piece. Language emotionality and presence of references are not taken into "
               "account.")
 
+    score_elements = {
+        'form_score_spelling': form_score_spelling,
+        'form_score_punctuation': form_score_punctuation,
+        'form_score_capitalization': form_score_capitalization,
+        'form_score_complexity': form_score_complexity,
+        'neut_score_superlatives': neut_score_superlatives,
+        'neut_score_emotional': neut_score_emotional,
+        'neut_score_banned': neut_score_banned,
+        'neut_score_slurs': neut_score_slurs,
+        'tran_score_citations': tran_score_citations,
+        'tran_score_external_references': tran_score_external_references,
+        'tran_score_broken_links': tran_score_broken_links,
+        'tran_score_author': tran_score_author,
+        'lay_score_photos': lay_score_photos,
+        'lay_score_video': lay_score_video,
+        'lay_score_font_size': lay_score_font_size,
+        'lay_score_font_type': lay_score_font_type
+    }
+
+    score_weights = {
+        'form_score_spelling': 0.2,
+        'form_score_punctuation': 0.3,
+        'form_score_capitalization': 0.1,
+        'form_score_complexity': 0.3,
+        'neut_score_superlatives': 0.2,
+        'neut_score_emotional': 0.2,
+        'neut_score_banned': 0.1,
+        'neut_score_slurs': 0.1,
+        'tran_score_citations': 0.2,
+        'tran_score_external_references': 0.1,
+        'tran_score_broken_links': 0.1,
+        'tran_score_author': 0.2,
+        'lay_score_photos': 0.1,
+        'lay_score_video': 0.1 if lay_score_video == 1 else 0.0,
+        'lay_score_font_size': 0.05,
+        'lay_score_font_type': 0.05
+    }
+
+    credibility_score_weighted = 0
+
+    for key in score_elements.keys():
+        credibility_score_weighted += score_elements[key] * score_weights[key]
+        print(credibility_score_weighted)
+
+    credibility_score_weighted = credibility_score_weighted / 2.4 if lay_score_video == 1 else credibility_score_weighted / 2.3
+
+    print("Weighted credibility score:", credibility_score_weighted)
+    
+    score_elements['score_formality'] = score_formality
+    score_elements['score_neutrality'] = score_neutrality
+    score_elements['score_transparency'] = score_transparency
+    score_elements['score_layout'] = score_layout
+    score_elements['credibility_score'] = credibility_score
+    score_elements['credibility_score_weighted'] = credibility_score_weighted
+
+    return score_elements
 
 #calculate_score()
