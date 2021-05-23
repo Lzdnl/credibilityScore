@@ -27,7 +27,7 @@ def clean_website_text():
     for i in range(int(len(paragraphs)/2), len(paragraphs)):
         if paragraphs[i] in article_paragraphs:
             if paragraphs[i+1] not in article_paragraphs and paragraphs[i+2] not in article_paragraphs and paragraphs[i+3] not in article_paragraphs:
-                article_paragraphs = article_paragraphs[:(article_paragraphs.index(paragraphs[i]))+1]
+                article_paragraphs = article_paragraphs[:(article_paragraphs.index(paragraphs[i]))]
         break
 
     website_properties['cleaned_text'] = article_paragraphs

@@ -22,15 +22,14 @@ def transparency_check():
     # Excluding links from disclaimers
     for link_with_info in website_properties['all_links']:
         link_info = link_with_info.split("|")
-        if len(link_info) > 2 and link_info[2].__contains__(".") and len(link_info[2].split()) > 15 \
-                and not link_info[0].__contains__("taboola" or "outbrain" or "@") and link_info[0].count(".") > 1:
-            if not (link_info[2].lower().__contains__("all rights reserved")):
-                if link_info[1].strip() != link_info[2].strip():
-                    if link_info[2] in article_text:
-                    # print(link_info[1])
-                    # print(link_info[2])
-                        article_links.append(link_info[0])
-                        link_text.append(link_info[1])
+        #if not link_info[0].__contains__("taboola" or "outbrain" or "@"):
+        #    if not link_info[2].lower().__contains__("all rights reserved" or "privacy policy"):
+        #        if link_info[0].count(".") > 1:
+        if link_info[2] in article_text:
+            # print(link_info[1])
+            # print(link_info[2])
+            article_links.append(link_info[0])
+            link_text.append(link_info[1])
 
     # Total number of references
     num_references = len(article_links)

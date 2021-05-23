@@ -21,8 +21,14 @@ def calculate_score():
     title_length = website_properties['title'].count(" ") + 1
 
     # ________________________________ Formality Score _________________________________________________________
-    form_score_spelling = 1 - ((website_properties['form_num_spelling_errors_title']/title_length +
-                               website_properties['form_num_spelling_errors']/website_properties['num_unique_words'])/2)
+    MIN_FORMALITY = 0.8
+    MIN_COMPLEXITY = 0.2
+    MAX_COMPLEXITY = 0.45
+
+    spelling_error_rate = 1 - (website_properties['form_num_spelling_errors_title']/title_length +
+                               website_properties['form_num_spelling_errors']/website_properties['num_unique_words'])/2
+
+    form_score_spelling = max(0, (spelling_error_rate - MIN_FORMALITY) / (1 - MIN_FORMALITY))
 
     if website_properties['form_num_consecutive_marks'] > 0:
         score_consecutive_marks = 0
@@ -35,16 +41,19 @@ def calculate_score():
         score_marks_title = 1
 
     score_marks_text = 1 - (website_properties['form_num_marks_text']/website_properties['num_sentences'])
+    punctuation_error_rate = (score_consecutive_marks + score_marks_title + score_marks_text) / 3
+    form_score_punctuation = max(0, (punctuation_error_rate - MIN_FORMALITY) / (1 - MIN_FORMALITY))
 
-    form_score_punctuation = (score_consecutive_marks + score_marks_title + score_marks_text) / 3
-
-    form_score_capitalization = 1 - website_properties['form_num_all_caps']/website_properties['num_words']
+    all_caps_error_rate = 1 - website_properties['form_num_all_caps']/website_properties['num_words']
+    form_score_capitalization = max(0, (all_caps_error_rate - MIN_FORMALITY) / (1 - MIN_FORMALITY))
 
     # Fake news are semantically more complex than real news
     # Real news are syntactically more complex than fake news
     form_score_semantic_complexity = 1 - website_properties['form_lexical_richness']
     form_score_syntactic_complexity = website_properties['num_sentences']/website_properties['num_words']
-    form_score_complexity = (form_score_syntactic_complexity + form_score_semantic_complexity) / 2
+    complexity_rate = (form_score_syntactic_complexity + form_score_semantic_complexity) / 2
+    form_score_complexity = max(0, (complexity_rate - MIN_COMPLEXITY) / (MAX_COMPLEXITY - MIN_COMPLEXITY))
+    form_score_complexity = min(form_score_complexity, 1)
 
     print("form_score_spelling: ", form_score_spelling)
     print("form_score_punctuation: ", form_score_punctuation)
@@ -58,13 +67,18 @@ def calculate_score():
 
     # ______________________________________ Neutrality Score ______________________________________________________
 
-    neut_score_superlatives = 1 - website_properties['neut_num_superlatives']/website_properties['num_words']
+    MIN_NEUTRALITY = 0.8
+
+    superlative_rate = 1 - website_properties['neut_num_superlatives']/website_properties['num_words']
+    neut_score_superlatives = max(0, (superlative_rate - MIN_NEUTRALITY) / (1 - MIN_NEUTRALITY))
 
     # If the article is marked as opinion, it's OK to use emotional words
-    neut_score_emotional = 1- website_properties['neut_num_emotional']/website_properties['num_words']
-    if website_properties['tran_marked_as_opinion']:
-        neut_score_emotional = 1
-    neut_score_banned = 1 - int(website_properties['neut_num_banned_words'])/int(website_properties['num_words'])
+    emotional_rate = 1 if website_properties['tran_marked_as_opinion'] else \
+        1- website_properties['neut_num_emotional']/website_properties['num_words']
+    neut_score_emotional = max(0, (emotional_rate - MIN_NEUTRALITY) / (1 - MIN_NEUTRALITY))
+
+    banned_rate = 1 - int(website_properties['neut_num_banned_words'])/int(website_properties['num_words'])
+    neut_score_banned = max(0, (banned_rate - MIN_NEUTRALITY) / (1 - MIN_NEUTRALITY))
 
     if website_properties['neut_num_slurs'] > 0:
         neut_score_slurs = 0
@@ -222,7 +236,7 @@ def calculate_score():
 
     for key in score_elements.keys():
         credibility_score_weighted += score_elements[key] * score_weights[key]
-        print(credibility_score_weighted)
+        #print(credibility_score_weighted)
 
     credibility_score_weighted = credibility_score_weighted / 2.4 if lay_score_video == 1 else credibility_score_weighted / 2.3
 

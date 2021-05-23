@@ -1,3 +1,5 @@
+import sys
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -36,14 +38,17 @@ def get_website_text(url):
 
         for link in driver.find_elements(By.XPATH, '//h1/following::a[@href]'):
             ancestor = link.find_element(By.XPATH, 'ancestor::*[position()=1]')
-            ancestor_text.append(ancestor.text)
+            link_list.append(link.get_attribute('href'))
+            if len(ancestor.text) != '':
+                ancestor_text.append(ancestor.text)
+            else:
+                ancestor_text.append("null_ancestor_text")
             if link.text != '':
                 link_text.append(link.text)
             else:
                 link_text.append("null_link_text")
-            link_list.append(link.get_attribute('href'))
     except:
-        print('Something went wrong')
+        print("Unexpected error:", sys.exc_info()[0])
         driver.close()
 
     website_properties = {

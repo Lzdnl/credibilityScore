@@ -134,8 +134,6 @@ def neutrality_check():
     website_properties['neut_num_emotional'] = emotion_words_text_dictionary["positive"] + emotion_words_text_dictionary["negative"]
     website_properties['neut_num_emotion_positive'] = emotion_words_text_dictionary["positive"]
     website_properties['neut_num_emotion_negative'] = emotion_words_text_dictionary["negative"]
-    website_properties['neut_num_emotion_joy'] = emotion_words_text_dictionary["joy"]
-    website_properties['neut_num_emotion_fear'] = emotion_words_text_dictionary["fear"]
     website_properties['neut_num_slurs'] = slur_count
     website_properties['neut_superlatives_found'] = superlatives_found
     website_properties['neut_banned_words_found'] = list(banned_words_found)

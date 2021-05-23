@@ -32,19 +32,19 @@ def for_testing_calculate_score():
     #with open('cleaned_fake_news.txt', 'w') as cleaned_fake_news:
     #    cleaned_fake_news.writelines(cleaned_fake_list)
 
-    with open('./cleaned_real_news.txt') as fn:
+    with open('./fake_news_collection.txt') as fn:
         fake_news = fn.readlines()
 
     for i in range(len(fake_news)):
         fake_news[i] = (fake_news[i].split('\n'))[0]
 
-    for i in range(len(fake_news)):
+    for i in range(52, 100):
         try:
             sys.stdin = StringIO(fake_news[i])
             score_elements = calculateScore.calculate_score()
             score_elements['url'] = fake_news[i]
             all_scores.append(score_elements)
-            with open('real_news_scores.csv', 'w') as outfile:
+            with open('fake_news_collection_scores2.csv', 'w') as outfile:
                 writer = DictWriter(outfile,
                                     ('form_score_spelling', 'form_score_punctuation', 'form_score_capitalization',
                                      'form_score_complexity', 'neut_score_superlatives', 'neut_score_emotional',

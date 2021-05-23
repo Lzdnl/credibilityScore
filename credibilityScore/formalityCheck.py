@@ -40,19 +40,17 @@ def formality_check():
     website_properties['form_num_marks_text'] = marks_count_text
 
     # Check for CAPS LOCK usage, count how many words are written in caps lock
-    for i in range(1, len(article_paragraphs)):
+    for i in range(len(article_paragraphs)):
         words = article_paragraphs[i].split(" ")
         for i in range(len(words)-1):
             if not words[i].isalpha() and not words[i].isnumeric():
-                continue
-            if words[i].isupper():
-                if words[i+1].isupper() or words[i-1].isupper():
-                    capitalized_words.append(words[i])
-                    all_caps_words_count += 1
+                if words[i].isupper():
+                    if words[i+1].isupper() or words[i-1].isupper():
+                        capitalized_words.append(words[i])
+                        all_caps_words_count += 1
                     # print('Found word in all caps sequence: ', words[i])
 
         # Counting the number of unique words.
-
         for word in words:
             word = re.sub('[.,!?(){}<>]', '', word)
             if word.isalpha():
@@ -78,7 +76,6 @@ def formality_check():
                         incorrect_words.add(words[i])
                         # print(words[i])
                 if (words[i])[0].isupper() and '.' in words[i-1] or '?' in words[i-1] or '!' in words[i-1]:
-                    # TODO shouldn't this be words[i].lower?
                     if words[i].lower() != spell(words[i]).lower():
                         incorrect_words.add(words[i])
 
@@ -104,6 +101,5 @@ def formality_check():
     website_properties['num_unique_words'] = len(unique_words)
 
     return website_properties
-
 
 
