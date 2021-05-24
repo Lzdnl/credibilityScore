@@ -27,6 +27,7 @@ def formality_check():
     # Check for exclamation or question marks in the title
     marks_count_title = website_properties['title'].count('!')
     marks_count_title += website_properties['title'].count('?')
+    marks_count_title += website_properties['title'].count('...')
 
     website_properties['form_num_marks_title'] = marks_count_title
 

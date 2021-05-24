@@ -41,7 +41,12 @@ def calculate_score():
         score_marks_title = 1
 
     score_marks_text = 1 - (website_properties['form_num_marks_text']/website_properties['num_sentences'])
-    punctuation_error_rate = (score_consecutive_marks + score_marks_title + score_marks_text) / 3
+
+    if score_consecutive_marks == 0 or score_marks_title == 0:
+        punctuation_error_rate = 1
+    else:
+        punctuation_error_rate = score_marks_text
+    
     form_score_punctuation = max(0, (punctuation_error_rate - MIN_FORMALITY) / (1 - MIN_FORMALITY))
 
     all_caps_error_rate = 1 - website_properties['form_num_all_caps']/website_properties['num_words']
@@ -99,7 +104,7 @@ def calculate_score():
     tran_score_references = website_properties['tran_num_refs']
     tran_score_direct_quotes = website_properties['tran_num_direct_quotes']
 
-    tran_score_citations = (tran_score_references + tran_score_direct_quotes) / website_properties['num_sentences']
+    tran_score_citations = min(1, (tran_score_references + tran_score_direct_quotes) / website_properties['num_sentences'])
 
     if website_properties['tran_num_refs'] == 0:
         tran_score_external_references = 0
