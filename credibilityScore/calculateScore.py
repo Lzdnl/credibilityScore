@@ -30,24 +30,11 @@ def calculate_score():
 
     form_score_spelling = max(0, (spelling_error_rate - MIN_FORMALITY) / (1 - MIN_FORMALITY))
 
-    if website_properties['form_num_consecutive_marks'] > 0:
-        score_consecutive_marks = 0
+    if website_properties['form_num_consecutive_marks'] or website_properties['form_num_marks_title'] > 0:
+        form_score_punctuation = 0
     else:
-        score_consecutive_marks = 1
-
-    if website_properties['form_num_marks_title'] > 0:
-        score_marks_title = 0
-    else:
-        score_marks_title = 1
-
-    score_marks_text = 1 - (website_properties['form_num_marks_text']/website_properties['num_sentences'])
-
-    if score_consecutive_marks == 0 or score_marks_title == 0:
-        punctuation_error_rate = 1
-    else:
-        punctuation_error_rate = score_marks_text
-    
-    form_score_punctuation = max(0, (punctuation_error_rate - MIN_FORMALITY) / (1 - MIN_FORMALITY))
+        score_marks_text = 1 - (website_properties['form_num_marks_text']/website_properties['num_sentences'])
+        form_score_punctuation = max(0, (score_marks_text - MIN_FORMALITY) / (1 - MIN_FORMALITY))
 
     all_caps_error_rate = 1 - website_properties['form_num_all_caps']/website_properties['num_words']
     form_score_capitalization = max(0, (all_caps_error_rate - MIN_FORMALITY) / (1 - MIN_FORMALITY))
