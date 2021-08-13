@@ -5,6 +5,7 @@ import re
 
 def formality_check():
 
+    # Initializing relevant variables for this category
     marks_count_title = 0
     marks_count_text = 0
     consecutive_marks_count = 0
@@ -14,11 +15,13 @@ def formality_check():
     incorrect_words_title = set([])
     unique_words = set([])
 
+    # Initializing spell checker
     spell = Speller(lang='en')
 
+    # Getting properties dictionary from getWebsiteText.py
     website_properties = cleanWebsiteText.clean_website_text()
 
-    print("Formality check...")
+    print("Starting tests...")
 
     cleaned_text = website_properties['cleaned_text']
 
@@ -31,11 +34,11 @@ def formality_check():
 
     website_properties['form_num_marks_title'] = marks_count_title
 
+    # Check for consecutive exclamation or question marks in each paragraph
+    # The literature says it also makes sense to count single instances of '?'
     for paragraph in article_paragraphs:
-        # Check for consecutive exclamation or question marks in each paragraph
         consecutive_marks_count += paragraph.count('!!')
         consecutive_marks_count += paragraph.count('??')
-        # The literature says it also makes sense to count single instances of '?'
         marks_count_text += paragraph.count('?')
 
     website_properties['form_num_marks_text'] = marks_count_text
@@ -49,7 +52,6 @@ def formality_check():
                     if words[i+1].isupper() or words[i-1].isupper():
                         capitalized_words.append(words[i])
                         all_caps_words_count += 1
-                    # print('Found word in all caps sequence: ', words[i])
 
         # Counting the number of unique words.
         for word in words:
@@ -59,17 +61,17 @@ def formality_check():
                     unique_words.add(word.lower())
 
         # Check for spelling mistakes
-
         for i in range(len(words)):
 
             # Remove special characters from beginning and end of words
+            # Should practice regex more, this doesn't look so good
             words[i] = re.sub('[.:;,!?(){}<>"]', '', words[i])
             words[i] = words[i].replace('''”''', '')
             words[i] = words[i].replace('''“''', '')
             words[i] = words[i].replace('[', '')
             words[i] = words[i].replace(']', '')
 
-            # exclude acronyms and common names by looking for words which begin with a majuscule
+            # Exclude acronyms and common names by looking for words which begin with a majuscule
             # and are not at the beginning of a sentence
             if words[i] != '':
                 if (words[i])[0].islower() or i == 0:
@@ -82,6 +84,7 @@ def formality_check():
 
     title_words = website_properties['title'].split(' ')
 
+    # Check for spelling mistakes in the title (same way as in text)
     for i in range(len(title_words)):
         title_words[i] = re.sub('[.:;,!?(){}<>]', '', title_words[i])
         title_words[i] = title_words[i].replace('''”''', '')
@@ -92,6 +95,7 @@ def formality_check():
         if (title_words[i]).lower() != spell(title_words[i]).lower():
             incorrect_words_title.add(title_words[i])
 
+    # Add relevant metrics from this category to properties dictionary
     website_properties['form_num_spelling_errors'] = len(incorrect_words)
     website_properties['form_num_spelling_errors_title'] = len(incorrect_words_title)
     website_properties['form_num_consecutive_marks'] = consecutive_marks_count

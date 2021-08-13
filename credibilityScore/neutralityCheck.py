@@ -5,6 +5,7 @@ import re
 
 def neutrality_check():
 
+    # Initiating relevant variables for this category
     superlative_count = 0
     superlatives_found = []
     banned_words_dict = {}
@@ -15,10 +16,10 @@ def neutrality_check():
     slur_count = 0
     slurs_found = set([])
 
+    # Getting properties dictionary from formalityCheck.py
     website_properties = formalityCheck.formality_check()
 
-    print("Neutrality check...")
-
+    # Splitting cleaned text into paragraphs
     article_paragraphs = [paragraph.strip() for paragraph in website_properties['cleaned_text']]
 
     # Read superlative text file into list
@@ -42,9 +43,11 @@ def neutrality_check():
 
     banned_words_set = set(banned_words_list)
 
+    # Read emotional word list into list
     with open('./Lexicons/NRC-Emotion-Lexicon-Wordlevel-v0.92.txt') as nrc_emotion_lexicon:
         emotion_lexicon = nrc_emotion_lexicon.readlines()
 
+    # Clean emotional word list
     for i in range(len(emotion_lexicon)):
         emotion_lexicon[i] = emotion_lexicon[i].strip('\n')
         emotion_lexicon[i] = emotion_lexicon[i].split('\t')
@@ -53,9 +56,11 @@ def neutrality_check():
         if word.__contains__('1'):
             emotion_lexicon_dictionary[word[0]].append(word[1])
 
+    # Read slurs into list
     with open('./Lexicons/racial_slurs_cleaned.txt') as racial_slurs:
         racial_slur_list = racial_slurs.readlines()
 
+    # Clean slurs list
     for i in range(len(racial_slur_list)):
         racial_slur_list[i] = racial_slur_list[i].strip("\n")
 
@@ -72,7 +77,7 @@ def neutrality_check():
             words[i] = words[i].replace(']', '')
             words[i] = words[i].lower()
 
-        # make string from list of words, append a whitespace before and after,
+        # Make string from list of words, append a whitespace before and after,
         # separate each word by whitespace
         cleaned_words = " " + " ".join(words) + " "
 
@@ -99,13 +104,13 @@ def neutrality_check():
                 emotion_words_found.add(key)
             emotion_word_occurrence = count_overlapping(cleaned_words, " " + key + " ")
             if emotion_word_occurrence > 0:
-                # print(key, emotion_lexicon_dictionary[key], emotion_word_occurrence)
                 for value in emotion_lexicon_dictionary[key]:
                     if value not in emotion_words_text_dictionary:
                         emotion_words_text_dictionary[value] = 1
                     else:
                         emotion_words_text_dictionary[value] += 1
 
+        # Count number of slurs
         for slur in racial_slur_list:
             slur_count += count_overlapping(cleaned_words, " " + slur.lower() + " ")
             if " " + slur.lower() + " " in cleaned_words:
@@ -129,6 +134,7 @@ def neutrality_check():
         if banned_words_dict[key] == 0:
             del banned_words_final_count[key]
 
+    # Add relevant metrics to properties dictionary
     website_properties['neut_num_superlatives'] = superlative_count
     website_properties['neut_num_banned_words'] = str(sum(banned_words_final_count.values()))
     website_properties['neut_num_emotional'] = emotion_words_text_dictionary["positive"] + emotion_words_text_dictionary["negative"]
@@ -141,6 +147,7 @@ def neutrality_check():
     website_properties['neut_slurs_found'] = list(slurs_found)
 
     return website_properties
+
 
 # https://stackoverflow.com/questions/2970520/string-count-with-overlapping-occurrences
 def count_overlapping(string, sub):

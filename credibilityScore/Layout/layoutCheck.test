@@ -1,4 +1,4 @@
 layoutCheck
-    jsfactory mydriver.js https://www.belfasttelegraph.co.uk/news/northern-ireland/belfast/northern-ireland-riots-14-police-officers-injured-and-three-14-year-old-boys-arrested-during-belfast-disorder-40296934.html 768x576
-        wait 1s
-        check layoutCheck.gspec --include "all"
+    jsfactory ./Layout/mydriver.js https://edition.cnn.com/2021/08/12/uk/plymouth-england-shooting-gbr-intl/index.html 768x576
+        wait 10s
+        check ./Layout/layoutCheck.gspec --include "all"

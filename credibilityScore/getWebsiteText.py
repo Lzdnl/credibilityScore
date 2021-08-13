@@ -4,7 +4,6 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 import time
-from selenium.webdriver.support import expected_conditions as EC
 
 """ Because the HTML structure of each news website is different, we are taking the whole text of the page and writing
  it to a file to process later. The extension 'I don't care about cookies' removes the consent popups. """
@@ -14,13 +13,21 @@ def get_website_text(url):
 
     print("Fetching website properties...")
 
+    # Create a Firefox profile to manipulate browser configuration
     profile = webdriver.FirefoxProfile()
-    profile.add_extension(extension='i_dont_care_about_cookies-3.2.4-an+fx.xpi')
-    driver = webdriver.Firefox(firefox_profile=profile)
 
+    # Unfortunately, installing this extention doesn't work any more. Might be because of a Selenium update
+    #profile.add_extension(extension='i_dont_care_about_cookies-3.3.1-an+fx.xpi')
+
+    # Alternative: set browser to reject all cookies (removes cookie banner, but not for all websites)
+    profile.set_preference("network.cookie.cookieBehavior", 2)
+
+    # Start browser and request URL
+    driver = webdriver.Firefox(firefox_profile=profile)
     driver.get(url)
 
-    # TODO get rid of sleep by making the wait work properly
+    # It's better to wait until a certain element on the page has appeared. But this doesn't always work properly
+    # Hard wait to make sure page is loaded
     wait = WebDriverWait(driver, 15)
     time.sleep(5)
 
@@ -36,6 +43,8 @@ def get_website_text(url):
         link_text=[]
         link_list=[]
 
+        # Also getting the text of each URL and the text of its ancestor
+        # Will be useful for getting rid of URLs from ads, buttons, etc
         for link in driver.find_elements(By.XPATH, '//h1/following::a[@href]'):
             ancestor = link.find_element(By.XPATH, 'ancestor::*[position()=1]')
             link_list.append(link.get_attribute('href'))
@@ -51,6 +60,9 @@ def get_website_text(url):
         print("Unexpected error:", sys.exc_info()[0])
         driver.close()
 
+    # Create website properties dictionary.
+    # This is passed from function to function and completed with relevant metrics and content
+    # Add extracted properties to dictionary
     website_properties = {
         'all_text': website_text,
         'title': website_title,

@@ -1,44 +1,22 @@
-import calculateScore
+import credibilityScore.calculateScore as calculateScore
 import sys
 from io import StringIO
 from csv import DictWriter
-import requests
 
-
+# Function for calculating credibility score of large number of articles
+# Goes through dataset one by one and runs the calculateScore function
+# Stores score results in csv file
 def for_testing_calculate_score():
 
     all_scores = []
-    #cleaned_fake_list = []
 
-    #with open('./fake_news') as fake:
-    #    fake_all = fake.readlines()
-
-    #for i in range(len(fake_all)):
-    #    fake_all[i] = (fake_all[i].split('\n'))[0]
-
-    #for i in range(len(fake_all)):
-    #    if not fake_all[i].__contains__('http'):
-    #        fake_all[i] = ('https://' + fake_all[i])
-
-    #for i in range(len(fake_all)):
-    #    print("Checking status code for " + str(fake_all[i]))
-    #    try:
-    #        r = requests.head(fake_all[i], timeout=10)
-    #        if r.status_code < 400:
-    #            cleaned_fake_list.append(str(fake_all[i]) + "\n")
-    #    except:
-    #        print("Could not connect")
-
-    #with open('cleaned_fake_news.txt', 'w') as cleaned_fake_news:
-    #    cleaned_fake_news.writelines(cleaned_fake_list)
-
-    with open('./fake_news_collection.txt') as fn:
+    with open('fake_news_collection.txt') as fn:
         fake_news = fn.readlines()
 
     for i in range(len(fake_news)):
         fake_news[i] = (fake_news[i].split('\n'))[0]
 
-    for i in range(52, 100):
+    for i in range(len(fn)):
         try:
             sys.stdin = StringIO(fake_news[i])
             score_elements = calculateScore.calculate_score()
@@ -56,10 +34,6 @@ def for_testing_calculate_score():
                 writer.writeheader()
                 writer.writerows(all_scores)
         except:
-            print("Some error")
-
-
-    #print(score_elements)
-
+            print("An error has occurred. Moving on to the next article.")
 
 for_testing_calculate_score()

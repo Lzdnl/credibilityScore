@@ -6,13 +6,16 @@ importClass(org.openqa.selenium.WebDriver);
 importClass(org.openqa.selenium.firefox.internal.ProfilesIni);
 importClass(org.openqa.selenium.firefox.FirefoxOptions);
 
+// Basic JavaScript browser factory
+// Following the guide http://galenframework.com/docs/reference-galen-test-suite-syntax/
+// Browser is set to reject all cookies
+
 var pageUrl = args[0];
 var size = GalenUtils.readSize(args[1]);
 
 var profile = new FirefoxProfile();
-profile.addExtension(java.io.File, "i_dont_care_about_cookies-3.2.4-an+fx.xpi");
 
-
+profile.setPreference("network.cookie.cookieBehavior", 2)
 var opts = new FirefoxOptions();
 opts.setProfile(profile);
 
