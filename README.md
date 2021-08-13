@@ -9,7 +9,7 @@ Automated credibility assessment for online news articles. Given an URL of an ar
 
 Created for thesis "Automatic assessment of online content credibility by measuring the adherence to journalistic standards"
 
-## Installation (Linux):
+## Installation (Linux)
 Prerequisites:
 * Python3 installed
 * Pip installed: sudo apt-get install python3-pip
