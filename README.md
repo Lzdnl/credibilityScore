@@ -6,6 +6,7 @@ Automated credibility assessment for online news articles. Given an URL of an ar
 * Neutrality
 * Transparency
 * Layout
+Created for thesis "Automatic assessment of online content credibility by measuring the adherence to journalistic standards"
 
 ## Installation (Linux):
 Prerequisites:
